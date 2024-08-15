@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Millionaire Game</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            background: #000000;
+        }
+
+        .background1 {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            background: #D9D9D9;
+        }
+
+        .background2 {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: url('assets/quiz.jpg') no-repeat center center;
+            background-size: cover;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100%;
+            width: 100%;
+            position: relative;
+        }
+
+        .top-panel {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-size: cover;
+            padding: 1rem;
+            width: 98%;
+            height: 100px;
+            border-radius: 50px;
+            margin: 1rem auto;
+        }
+		
+		.lifeline-container {
+            display: flex;
+        }
+
+        .lifeline {
+            box-sizing: border-box;
+            width: 150px;
+            height: 80px;
+            background: #160C26;
+            border: 5px solid #F0FE4D;
+            margin-left: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50px;
+            position: relative;
+            color: #F0FE4D;
+            font-weight: 800;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        .lifeline.used::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: #FE0000;
+            transform: rotate(45deg);
+        }
+
+        .lifeline.used::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: #FE0000;
+            transform: rotate(-45deg);
+        }
+
+        .main-content {
+            display: flex;
+            flex-direction: row;
+            flex: 1;
+            align-items: center;
+            padding: 1rem;
+            margin-left: auto;
+            margin-bottom: 5rem;
+        }
+
+        .levels {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-end;
+        }
+
+        .level {
+            box-sizing: border-box;
+            width: 300px;
+            height: 40px;
+            background: #160C26;
+            border: 3px solid #7D69F8;
+            border-radius: 50px;
+            margin: 0.2rem 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #FFFFFF;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .level.active {
+            background-color: #9687F1;
+            color: #000000;
+        }
+
+        .question-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            flex: 1;
+            padding: 1rem;
+        }
+
+        .question {
+            box-sizing: border-box;
+            width: 90%;
+            background: #160C26;
+            border: 5px solid #38DAFE;
+            border-radius: 80px;
+            color: #FFFFFF;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+            text-align: center;
+        }
+
+        .options {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            width: 90%;
+        }
+
+        .option {
+            box-sizing: border-box;
+            width: 48%;
+            background: #160C26;
+            border: 4px solid #38DAFE;
+            border-radius: 50px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            color: #FFFFFF;
+            font-size: 1.2rem;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .option.correct {
+            background-color: #0CB93C; /* Green for correct answer */
+        }
+        .option.wrong {
+            background-color: #FF0000; /* Red for wrong answer */
+        }
+
+        .bottom-panel {
+            height: 50%;
+            width: 100%;
+            margin-top: -5rem;
+        }
+
+        .poll {
+            display: none;
+            background: #160C26;
+            border: 2px solid #F0FE4D;
+            border-radius: 10px;
+            padding: 1rem;
+            color: #FFFFFF;
+            position: absolute;
+            top: 20%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60%;
+            text-align: center;
+            z-index: 10;
+        }
+
+        .poll-bar {
+            background: #F0FE4D;
+            border-radius: 10px;
+            margin: 0.5rem 0;
+            padding: 0.5rem;
+            text-align: center;
+            color: #000000;
+            font-weight: bold;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #160C26;
+            color: #FFFFFF;
+            border: 2px solid #F0FE4D;
+            border-radius: 10px;
+            padding: 1rem;
+            width: 60%;
+            text-align: center;
+            z-index: 1000;
+        }
+
+        .modal.active {
+            display: block;
+        }
+
+        .modal button {
+            background: #F0FE4D;
+            border: none;
+            border-radius: 5px;
+            padding: 0.5rem 1rem;
+            color: #000000;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-top: 1rem;
+        }
+
+        .modal .restart-button {
+            background: #FF0000;
+            border: none;
+            border-radius: 5px;
+            padding: 0.5rem 1rem;
+            color: #FFFFFF;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-top: 1rem;
+        }
+		
+		.main-menu-button {
+            background: #F0FE4D;
+            border: none;
+            border-radius: 50px;
+            padding: 0.5rem 1rem;
+            color: #000000;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+		
+    </style>
+</head>
+<body>
+    <div class="background1"></div>
+    <div class="background2"></div>
+    <div class="container">
+        <div class="top-panel">
+			<div class="main-menu-button" onclick="goToMainMenu()">Main Menu</div>
+            <div class="lifeline-container">
+                <div class="lifeline" id="lifeline-50-50">
+					<img src="assets/50-50.png" alt="50:50" class="lifeline-image">
+				</div>
+				<div class="lifeline" id="lifeline-audience-poll">
+					<img src="assets/audience-poll.png" alt="Audience Poll" class="lifeline-image">
+				</div>  
+            </div>
+        </div>
+        <div class="main-content">
+            <div class="levels" id="levels">
+                <!-- Levels dynamically filled here -->
+            </div>
+        </div>
+        <div class="bottom-panel">
+            <div class="question-container">
+                <div class="question" id="question">This is the question text</div>
+                <div class="options" id="options">
+                    <!-- Options dynamically filled here -->
+                </div>
+            </div>
+        </div>
+        <div class="poll" id="poll">
+            <h3>Audience Poll</h3>
+            <div class="poll-result" id="poll-result">
+                <!-- Poll results will be displayed here -->
+            </div>
+            <button onclick="closePoll()">Close</button>
+        </div>
+        <!-- Modal for displaying results -->
+        <div class="modal" id="result-modal">
+            <div id="result-message">This is the result message</div>
+            <div id="result-points"></div>
+           
+            <button class="restart-button" onclick="restartGame()">Restart Game</button>
+        </div>
+    </div>
+	 <!-- Audio element -->
+    <audio id="background-music" src="assets/background-music.mp3" preload="auto"></audio>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <script>
+	
+		window.addEventListener('load', () => {
+            const music = document.getElementById('background-music');
+            music.play().catch(error => {
+                console.log("Playback failed: ", error);
+            });
+        });
+		
+        const levelPoints = [1000, 5000, 10000, 20000, 40000, 62500, 125000, 250000, 500000, 1000000];
+        
+        let questions = []; // Initialize an empty array for questions
+        let currentLevel = 0;
+        let fiftyFiftyUsed = false;
+        let audiencePollUsed = false;
+
+        function loadQuestionsFromCSV(url) {
+            return new Promise((resolve, reject) => {
+                Papa.parse(url, {
+                    download: true,
+                    header: true,
+                    complete: (result) => {
+                        const questions = result.data.map(row => ({
+                            question: row.question,
+                            options: [row.option1, row.option2, row.option3, row.option4],
+                            answer: row.answer
+                        }));
+                        resolve(questions);
+                    },
+                    error: (error) => reject(error)
+                });
+            });
+        }
+
+        function displayQuestion(index) {
+            const questionData = questions[index];
+            document.getElementById('question').innerText = questionData.question;
+
+            const optionsContainer = document.getElementById('options');
+            optionsContainer.innerHTML = '';
+
+            questionData.options.forEach(option => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = 'option';
+                optionDiv.innerText = option;
+                optionDiv.addEventListener('click', () => handleOptionClick(option, questionData.answer));
+                optionsContainer.appendChild(optionDiv);
+            });
+
+            updateLevels(index);
+        }
+
+        function handleOptionClick(selectedOption, correctAnswer) {
+            const options = document.querySelectorAll('.option');
+            options.forEach(option => {
+                option.classList.remove('correct', 'wrong');
+                if (option.innerText === correctAnswer) {
+                    option.classList.add('correct');
+                } else if (option.innerText === selectedOption) {
+                    option.classList.add('wrong');
+                }
+            });
+
+            if (selectedOption === correctAnswer) {
+                currentLevel++;
+                if (currentLevel < questions.length) {
+                    setTimeout(() => displayQuestion(currentLevel), 1000);
+                } else {
+                    showModal(`Congratulations! You have completed the quiz. Points: ${levelPoints[currentLevel - 1]}`);
+                }
+            } else {
+                setTimeout(() => {
+                    showModal(`Wrong answer! Points earned: ${levelPoints[currentLevel - 1]}`);
+                }, 1000);
+            }
+        }
+
+        function initializeLevels() {
+            const levelsContainer = document.getElementById('levels');
+            levelsContainer.innerHTML = ''; // Clear any existing levels
+
+            levelPoints.forEach((points, index) => {
+                const levelDiv = document.createElement('div');
+                levelDiv.className = 'level';
+                levelDiv.innerText = `Level ${index + 1} - ${points} pts`;
+                levelsContainer.appendChild(levelDiv);
+            });
+
+            updateLevels(0); // Highlight the first level
+        }
+
+        function updateLevels(index) {
+            const levels = document.querySelectorAll('.level');
+            levels.forEach((level, i) => {
+                if (i === index) {
+                    level.classList.add('active');
+                } else {
+                    level.classList.remove('active');
+                }
+            });
+        }
+
+        function handleFiftyFifty() {
+            if (fiftyFiftyUsed) return;
+
+            fiftyFiftyUsed = true;
+            document.getElementById('lifeline-50-50').classList.add('used');
+
+            const currentQuestion = questions[currentLevel];
+            const correctAnswer = currentQuestion.answer;
+            const options = Array.from(document.querySelectorAll('.option'));
+
+            let removedCount = 0;
+
+            options.forEach(option => {
+                if (option.innerText !== correctAnswer && removedCount < 2) {
+                    option.style.display = 'none';
+                    removedCount++;
+                }
+            });
+        }
+
+        function handleAudiencePoll() {
+            if (audiencePollUsed) return;
+
+            audiencePollUsed = true;
+            document.getElementById('lifeline-audience-poll').classList.add('used');
+
+            const currentQuestion = questions[currentLevel];
+            const correctAnswer = currentQuestion.answer;
+            const options = currentQuestion.options;
+
+            // Simulate poll results
+            const pollResults = simulatePoll(correctAnswer, options);
+            displayPollResults(pollResults, options);
+        }
+
+        function simulatePoll(correctAnswer, options) {
+            const results = {};
+            options.forEach(option => results[option] = 0);
+
+            // Randomly distribute votes with a higher probability for the correct answer
+            const totalVotes = 100;
+            const correctAnswerVotes = Math.floor(Math.random() * 30) + 50; // 50 to 80%
+            let remainingVotes = totalVotes - correctAnswerVotes;
+
+            results[correctAnswer] = correctAnswerVotes;
+
+            options.forEach(option => {
+                if (option !== correctAnswer) {
+                    const votes = Math.floor(Math.random() * (remainingVotes / 2));
+                    results[option] = votes;
+                    remainingVotes -= votes;
+                }
+            });
+
+            // Distribute any remaining votes randomly
+            while (remainingVotes > 0) {
+                options.forEach(option => {
+                    if (remainingVotes > 0 && option !== correctAnswer) {
+                        results[option]++;
+                        remainingVotes--;
+                    }
+                });
+            }
+
+            return results;
+        }
+
+        function displayPollResults(results, options) {
+            const pollResultContainer = document.getElementById('poll-result');
+            pollResultContainer.innerHTML = '';
+
+            options.forEach(option => {
+                const pollBar = document.createElement('div');
+                pollBar.className = 'poll-bar';
+                pollBar.style.width = results[option] + '%';
+                pollBar.innerText = `${option}: ${results[option]}%`;
+                pollResultContainer.appendChild(pollBar);
+            });
+
+            document.getElementById('poll').style.display = 'block';
+        }
+
+        function closePoll() {
+            document.getElementById('poll').style.display = 'none';
+        }
+		
+		function goToMainMenu() {
+            window.location.href = '/';
+        }
+
+        function showModal(message) {
+            const modal = document.getElementById('result-modal');
+            const resultMessage = document.getElementById('result-message');
+            const resultPoints = document.getElementById('result-points');
+            resultMessage.innerText = message;
+            
+            modal.classList.add('active');
+        }
+		
+        function closeModal() {
+            document.getElementById('result-modal').classList.remove('active');
+        }
+
+        function restartGame() {
+            currentLevel = 0;
+            fiftyFiftyUsed = false;
+            audiencePollUsed = false;
+
+            // Reset the lifelines
+            const lifelineElements = document.querySelectorAll('.lifeline');
+            lifelineElements.forEach(lifeline => {
+                lifeline.classList.remove('used');
+            });
+
+            initializeLevels();
+            displayQuestion(currentLevel);
+            closeModal(); // Hide the modal when restarting the game
+        }
+
+        document.getElementById('lifeline-50-50').addEventListener('click', handleFiftyFifty);
+        document.getElementById('lifeline-audience-poll').addEventListener('click', handleAudiencePoll);
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const questionsData = await loadQuestionsFromCSV('assets/quizdata.csv'); // Path to your CSV file
+                questions = questionsData;
+                initializeLevels();
+                displayQuestion(currentLevel);
+            } catch (error) {
+                console.error('Error loading questions:', error);
+            }
+        });
+    </script>
+</body>
+</html>

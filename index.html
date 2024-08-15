@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Millionaire Game - Start Page</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: url('assets/index.png') no-repeat center center;
+            background-size: cover; /* Ensures the image covers the entire background */
+            justify-content: center;
+            height: 100vh;
+            color: #FFFFFF;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+        }
+
+        .button {
+            position: relative;
+            background: #160C26;
+            border: 3px solid #F0FE4D;
+            border-radius: 50px;
+            color: #F0FE4D;
+            font-size: 1.5rem;
+            font-weight: bold;
+            padding: 1rem 2rem;
+            margin: 1rem;
+            cursor: pointer;
+            transition: background 0.3s;
+            overflow: hidden; /* Ensure spinner stays inside button */
+        }
+
+        .button:hover {
+            background: #1e1e1e;
+        }
+
+        .button .spinner {
+            position: absolute;
+            top: 25%;
+            left: 84.5%;
+            transform: translate(-50%, -50%);
+            border: 3px solid rgba(240, 254, 77, 0.2);
+            border-radius: 50%;
+            border-top: 3px solid #F0FE4D;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+            display: none; /* Hide spinner initially */
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome to the Cyber Expert Game</h1>
+        <button class="button" id="start-button" onclick="startGame()">
+            Start Game
+            <div class="spinner" id="spinner"></div>
+        </button>
+        <button class="button" onclick="quitGame()">Quit</button>
+    </div>
+
+    <script>
+        function startGame() {
+            const button = document.getElementById('start-button');
+            const spinner = document.getElementById('spinner');
+            
+            // Show the spinner
+            spinner.style.display = 'block';
+            
+            // Add a delay before redirecting
+            setTimeout(() => {
+                window.location.href = '/figma5';
+            }, 2000); // Delay of 2 seconds (2000 milliseconds)
+        }
+
+        function quitGame() {
+            window.open('/feedback', '_blank');
+            window.close();
+        }
+    </script>
+</body>
+</html>

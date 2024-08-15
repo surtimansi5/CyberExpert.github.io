@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Millionaire Game - Feedback</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: url('assets/index.png') no-repeat center center;
+            background-size: cover; /* Ensures the image covers the entire background */
+            justify-content: center;
+            height: 100vh;
+            color: #FFFFFF;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+        }
+
+        .button, .feedback-button {
+            background: #160C26;
+            border: 3px solid #F0FE4D;
+            border-radius: 50px;
+            color: #F0FE4D;
+            font-size: 1.5rem;
+            font-weight: bold;
+            padding: 1rem 2rem;
+            margin: 1rem;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .button:hover, .feedback-button:hover {
+            background: #1e1e1e;
+        }
+
+        form {
+            background: rgba(22, 12, 38, 0.8);
+            border: 3px solid #7D69F8;
+            border-radius: 10px;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 80%;
+            max-width: 600px;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 0.8rem;
+            margin: 0.5rem 0;
+            border: 2px solid #7D69F8;
+            border-radius: 10px;
+            background: #1e1e1e;
+            color: #7D69F8;
+            font-size: 1rem;
+        }
+
+        input[type="submit"] {
+            background: #7D69F8;
+            color: #160C26;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        input[type="submit"]:hover {
+            background: #d9d9d9;
+        }
+
+        .stars {
+            display: flex;
+            flex-direction: row;
+            margin: 1rem 0;
+        }
+
+        .star {
+            font-size: 2rem;
+            color: #7D69F8;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .star:hover,
+        .star.selected {
+            color: #FFD700; /* Gold color for selected stars */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Please share your feedback</h1>
+        <form id="feedback-form">
+            <input type="text" id="name" name="name" placeholder="Your Name" required>
+            <input type="email" id="email" name="email" placeholder="Your Email" required>
+            <textarea id="feedback" name="feedback" placeholder="Your Feedback" rows="5" required></textarea>
+            <div class="stars" id="stars">
+                <!-- Star rating system -->
+                <span class="star" data-value="1">&#9733;</span>
+                <span class="star" data-value="2">&#9733;</span>
+                <span class="star" data-value="3">&#9733;</span>
+                <span class="star" data-value="4">&#9733;</span>
+                <span class="star" data-value="5">&#9733;</span>
+            </div>
+            <input type="hidden" id="rating" name="rating" value="0">
+            <input type="submit" value="Submit Feedback">
+        </form>
+        <button class="feedback-button" onclick="goToStart()">Back to Start Page</button>
+    </div>
+
+    <script>
+        const stars = document.querySelectorAll('.star');
+        let selectedRating = 0;
+
+        stars.forEach(star => {
+            star.addEventListener('click', () => {
+                selectedRating = star.getAttribute('data-value');
+                document.getElementById('rating').value = selectedRating;
+                updateStarSelection(selectedRating);
+            });
+        });
+
+        function updateStarSelection(rating) {
+            stars.forEach(star => {
+                if (star.getAttribute('data-value') <= rating) {
+                    star.classList.add('selected');
+                } else {
+                    star.classList.remove('selected');
+                }
+            });
+        }
+
+        document.getElementById('feedback-form').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent the form from submitting the default way
+
+            // Gather form data
+            const formData = new FormData(this);
+            const data = {};
+            formData.forEach((value, key) => {
+                data[key] = value;
+            });
+
+            // Log the data to the console
+            console.log('Form Data:', data);
+
+            alert('Feedback submitted! Thank you.');
+            document.getElementById('feedback-form').reset(); // Clear the form
+            updateStarSelection(0); // Reset star selection
+        });
+
+        function goToStart() {
+            window.location.href = '/'; // Change to your start page
+        }
+    </script>
+</body>
+</html>
